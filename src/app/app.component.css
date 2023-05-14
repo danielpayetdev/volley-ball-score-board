@@ -1,0 +1,11 @@
+.scoreLigne {
+    display: flex;
+    width: 80%;
+    margin: auto;
+}
+
+.teamView {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem auto;
+}

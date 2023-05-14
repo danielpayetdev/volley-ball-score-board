@@ -1,14 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, WritableSignal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
+import { PointScoreComponent } from "./point-score/point-score.component";
+import { MatchService, Team } from './services/score.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  imports: [CommonModule, RouterOutlet, PointScoreComponent]
 })
 export class AppComponent {
-  title = 'volley-ball-score-board';
+  scoreService = inject(MatchService);
+
+  update(controller: WritableSignal<Team>): void {
+    controller.mutate(team => {
+      const currentSet = this.scoreService.currentSet();
+      return team.sets[currentSet] = team.sets[currentSet] + 1;
+    })
+  }
 }
