@@ -1,4 +1,4 @@
-import { Component, WritableSignal, computed, inject } from '@angular/core';
+import { Component, WritableSignal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { PointScoreComponent } from "./point-score/point-score.component";

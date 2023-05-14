@@ -8,4 +8,14 @@
     display: flex;
     flex-direction: column;
     margin: 1rem auto;
+    align-items: center;
+}
+
+.teamView button {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.teamName {
+    font-size: 5rem;
 }

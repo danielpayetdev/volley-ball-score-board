@@ -1,9 +1,9 @@
 import { Injectable, computed, signal } from "@angular/core";
 
 export class Team {
-    sets = [0,0,0,0,0];
-    
-    constructor(private name: string){}
+    sets = [0, 0, 0, 0, 0];
+
+    constructor(public name: string) { }
 }
 
 @Injectable({
@@ -13,24 +13,23 @@ export class MatchService {
     teamA = signal<Team>(new Team('Team A'));
     teamB = signal<Team>(new Team('Team B'));
     currentSet = signal(0);
-    teamASets = signal(0);
-    teamBSets = signal(0);
+    teamASets = computed<number>(() => this.#computeTeamSets(this.teamA(), this.teamB()));
+    teamBSets = computed<number>(() => this.#computeTeamSets(this.teamB(), this.teamA()));
 
     teamACurrentSet = computed(() => this.teamA().sets[this.currentSet()]);
     teamBCurrentSet = computed(() => this.teamB().sets[this.currentSet()]);
 
-    isSetWin = computed(() => {
-        const teamA = this.teamACurrentSet();
-        const teamB = this.teamBCurrentSet();
-        const maxSetPoint = this.currentSet() === 5 ? 15 : 25;
-        return (teamA >= maxSetPoint || teamB >= maxSetPoint) && Math.abs(teamA - teamB) > 1
-    });
+    isSetWin = computed(() =>
+        this.#isSetWin(this.teamA(), this.teamB(), this.currentSet())
+    );
 
     isMatchWin = computed(() => {
-        const t = this.teamA();
-        const t2 = this.teamB();
-        return this.isSetWin() && Math.abs(this.teamASets() - this.teamBSets()) === 3;
+        return this.teamASets() === 3 || this.teamBSets() === 3
     });
+
+    constructor() {
+        this.resetGame();
+    }
 
     resetGame(): void {
         this.teamA.set(new Team('Team A'));
@@ -39,17 +38,21 @@ export class MatchService {
     }
 
     nextSet(): void {
-        this.updateWinSet();
-        this.currentSet.update(this.plusUn);
+        this.currentSet.update((score: number) => score + 1);
     }
 
-    updateWinSet(): void {
-        if (this.teamA().sets[this.currentSet()] > this.teamB().sets[this.currentSet()]) {
-            this.teamASets.mutate(this.plusUn);
-        } else {
-            this.teamBSets.update(this.plusUn);
+    #isSetWin(team: Team, otherTeam: Team, set: number): boolean {
+        const maxSetPoint = set === 4 ? 15 : 25;
+        return (team.sets[set] >= maxSetPoint || otherTeam.sets[set] >= maxSetPoint) && Math.abs(team.sets[set] - otherTeam.sets[set]) > 1;
+    }
+
+    #computeTeamSets(team: Team, otherTeam: Team): number {
+        let nbSet = 0;
+        for (let i = 0; i <= this.currentSet(); i++) {
+            if (this.#isSetWin(team, otherTeam, i) && team.sets[i] > otherTeam.sets[i]) {
+                nbSet++;
+            }
         }
+        return nbSet;
     }
-
-    plusUn = (score: number) => score + 1;
 }

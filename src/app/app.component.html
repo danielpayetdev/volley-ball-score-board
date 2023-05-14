@@ -1,13 +1,17 @@
 <div class="scoreLigne">
   <div class="teamView">
+    <span class="teamName">{{ scoreService.teamA().name }}</span>
     <app-point-score [score]="scoreService.teamACurrentSet()" />
     Nb set: {{ scoreService.teamASets() }}
-    <button (click)="update(scoreService.teamA)" [disabled]="scoreService.isSetWin()">+</button>
+    <button (click)="update(scoreService.teamA)"
+            [disabled]="scoreService.isSetWin()">+</button>
   </div>
   <div class="teamView">
+    <span class="teamName">{{ scoreService.teamA().name }}</span>
     <app-point-score [score]="scoreService.teamBCurrentSet()" />
     Nb set: {{ scoreService.teamBSets() }}
-    <button (click)="update(scoreService.teamB)" [disabled]="scoreService.isSetWin()">+</button>
+    <button (click)="update(scoreService.teamB)"
+            [disabled]="scoreService.isSetWin()">+</button>
   </div>
 </div>
 
